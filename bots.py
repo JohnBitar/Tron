@@ -4,7 +4,7 @@ import numpy as np
 from tronproblem import *
 from trontypes import CellType, PowerupType
 import random, math
-
+from algorithms import getalphabetaWithN, alpha_beta_cutoff
 # Throughout this file, ASP means adversarial search problem.
 
 
@@ -14,98 +14,131 @@ class StudentBot:
     
     
     
-    def getalphabetaWithN(self, asp, state, youPlayer, getMax,alpha, beta, n, funct):
-        if asp.is_terminal_state(state):
-            return asp.evaluate_state(state)[youPlayer]
-        if n==0:
-            return funct(state)
-    
-        returnVal = 0
-        alp= alpha
-        bet= beta
-        if getMax:
-            returnVal = float("-inf")
-            for action in asp.get_available_actions(state):
-                successor = asp.transition(state, action)
-                successorScore = self.getalphabetaWithN(self, asp, successor, youPlayer, False, alp, bet, n-1, funct)
-                if successorScore > returnVal:
-                    returnVal = successorScore
-                if alp < successorScore:
-                    alp= successorScore
-                if bet <= alp:
-                    break
-        else:
-            returnVal = float("inf")
-            for action in asp.get_available_actions(state):
-                successor = asp.transition(state, action)
-                successorScore = self.getalphabetaWithN(self, asp, successor, youPlayer, True, alp, bet, n-1, funct)
-                if successorScore < returnVal:
-                    returnVal = successorScore
-                if bet > successorScore:
-                    bet = successorScore
-                if bet <= alp:
-                    break
-        return returnVal
-    
-    def alpha_beta_cutoff(self, asp, cutoff_ply, eval_func):
-        """
-    	This function should:
-    	- search through the asp using alpha-beta pruning
-    	- cut off the search after cutoff_ply moves have been made.
-    
-    	Inputs:
-    		asp - an AdversarialSearchProblem
-    		cutoff_ply- an Integer that determines when to cutoff the search
-    			and use eval_func.
-    			For example, when cutoff_ply = 1, use eval_func to evaluate
-    			states that result from your first move. When cutoff_ply = 2, use
-    			eval_func to evaluate states that result from your opponent's
-    			first move. When cutoff_ply = 3 use eval_func to evaluate the
-    			states that result from your second move.
-    			You may assume that cutoff_ply > 0.
-    		eval_func - a function that takes in a GameState and outputs
-    			a real number indicating how good that state is for the
-    			player who is using alpha_beta_cutoff to choose their action.
-    			You do not need to implement this function, as it should be provided by
-    			whomever is calling alpha_beta_cutoff, however you are welcome to write
-    			evaluation functions to test your implemention. The eval_func we provide
-                does not handle terminal states, so evaluate terminal states the
-                same way you evaluated them in the previous algorithms.
-    
-    	Output: an action(an element of asp.get_available_actions(asp.get_start_state()))
-    	"""
-    
-    
-        # get the starting state from which you are calculating what move to take
-        STARTSTATE = asp.get_start_state()
-    
-        # get which player you are
-        IAMPLAYER = STARTSTATE.player_to_move()
-        # initialiye alpha
-        alp = float("-inf")
-    
-        # initialize beta
-        bet = float("inf")
-    
-        # keep track of the action to take
-        actionToTake = 0
-        score = float("-inf")
-        for action in asp.get_available_actions(STARTSTATE):
-            successor = asp.transition(STARTSTATE, action)
-            successorScore = self.getalphabetaWithN(self, asp, successor, IAMPLAYER, False, alp, bet, cutoff_ply-1, eval_func)
-    
-            if successorScore > score:
-                score = successorScore
-                actionToTake= action
-            if alp < successorScore:
-                alp= successorScore
-            if bet <= alp:
-                break
-    
-        return actionToTake
-        pass
 
-    def boardEvaluation(self, board):
+    """
+        player location is row, column tuple
+        we can call TronProblem
+    """
+    def voronoi(self, state):
+        
+         # gets the locations of the players
+        locs = state.player_locs
+        # gets the board that we're in
+        board = state.board
+        # gets the player to move (here we don't know if that's us or the opponent)
+        ptm = state.ptm
+        
+        
+        #   find where p1 and p2 are
+        p1Pos = locs[0]
+        p2Pos = locs[1]
+        
+        # keep track of nodes you're going to visit for both players and those you've visited
+
+        
+        
+        # keep track of the number of nodes P1 and P2 dominated
+        numberP1Dominates = 0
+        numberP2Dominates = 0
+        
+        # keep track of the nodes that have been visited or dominated
+        visitedOrDominated = {p1Pos: 0, 
+                              p2Pos: 0}
+        depth = 0
+        
+       
+        
+        
+        if (ptm == 0):
+            visitedOrDominated[p2Pos] = 1
+            p1Frontier = [(p1Pos, 0)]
+            p2Frontier = [(p2Pos, 1)]
+            frontier_looked_at = p1Frontier
+            currentDominatorCount = numberP1Dominates
+        else:
+            visitedOrDominated[p1Pos] = 1
+            p1Frontier = [(p1Pos, 1)]
+            p2Frontier = [(p2Pos, 0)]
+            frontier_looked_at = p2Frontier
+            currentDominatorCount = numberP2Dominates
+        
+        
+        while not (p1Frontier == [] and p2Frontier == []):
+            try:
+                # what to do when one player stops having things in its frontier
+                # pop the current Node and its Depth 
+                curNode, curDepth = frontier_looked_at.pop()
+                # as long as the current depth is the one we're interested in
+                while curDepth == depth:
+                    r0, c0 = curNode
+                    # for each of the node's neighbors
+                    for action in {U, D, L, R}:
+                        r1, c1 = TronProblem.move(curNode, action)
+                        # which don't have barriers, walls, or other players
+                        # and are not visitedOrDominated
+                        if not (
+                            board[r1][c1] == CellType.BARRIER
+                            or board[r1][c1] == CellType.WALL
+                            or TronProblem.is_cell_player(board, (r1, c1))
+                        ) and not (r1, c1) in visitedOrDominated:
+                            # make sure to visit that node in the future
+                            frontier_looked_at.append((r1, c1), curDepth+2)
+                            # increment the number of nodes P1 dominates
+                            currentDominatorCount += 1
+                            # say that it is dominated with depth curDepth+1
+                            visitedOrDominated[(r1, c1)] = curDepth+2
+                    # we check if the next node has the depth we're looking for 
+                    #potential error
+                    if frontier_looked_at == [] or not frontier_looked_at[0][1] == depth:
+                        if (frontier_looked_at is p1Frontier):
+                            frontier_looked_at = p2Frontier
+                            currentDominatorCount = numberP2Dominates
+                        else:
+                            frontier_looked_at = p1Frontier
+                            currentDominatorCount = numberP1Dominates
+                        depth += 1
+                        
+                        break
+                    else:
+                        curNode, curDepth = frontier_looked_at.pop()
+
+                       
+            except:
+                depth += 1
+                if (frontier_looked_at is p1Frontier):
+                    frontier_looked_at = p2Frontier
+                    currentDominatorCount = numberP2Dominates
+                else:
+                    frontier_looked_at = p1Frontier
+                    currentDominatorCount = numberP1Dominates
+                break
+        while frontier_looked_at:
+             curNode, curDepth = frontier_looked_at.pop()
+             r0, c0 = curNode
+             # for each of the node's neighbors
+             for action in {U, D, L, R}:
+                r1, c1 = TronProblem.move(curNode, action)
+                # which don't have barriers, walls, or other players
+                # and are not visitedOrDominated
+                if not (
+                    board[r1][c1] == CellType.BARRIER
+                    or board[r1][c1] == CellType.WALL
+                    or TronProblem.is_cell_player(board, (r1, c1))
+                ) and not (r1, c1) in visitedOrDominated:
+                    # make sure to visit that node in the future
+                    # depth doesn't mattter at this stage, just getting there asap!
+                    frontier_looked_at.append((r1, c1), depth)
+                    # increment the number of nodes P1 dominates
+                    currentDominatorCount += 1
+                    # say that it is dominated with depth curDepth+1
+                    visitedOrDominated[(r1, c1)] = depth
+
+        return numberP1Dominates - numberP2Dominates
+    
+        # Start with the loop with player_to_play's position
+        
+    def boardEvaluation(self, state):
+        return self.voronoi(self, state)
         return 0
     
     def decide(self, asp):
@@ -113,15 +146,22 @@ class StudentBot:
         Input: asp, a TronProblem
         Output: A direction in {'U','D','L','R'}
         """
+        # gets the state of the game
         state = asp.get_start_state()
+        # gets the locations of the players
         locs = state.player_locs
+        # gets the board that we're in
         board = state.board
+        # gets the player to move (and knows that's us)
         ptm = state.ptm
+        # get our location
         loc = locs[ptm]
-        possibilities = list(TronProblem.get_safe_actions(board, loc))
-        if possibilities:
-            return random.choice(possibilities)
-        return "U"
+        
+        
+        # initialize the depth of alpha beta
+        alpha_beta_depth = 10
+        
+        return alpha_beta_cutoff(asp, alpha_beta_depth, self.boardEvaluation)
 
     def cleanup(self):
         """
@@ -178,11 +218,16 @@ class WallBot:
         Input: asp, a TronProblem
         Output: A direction in {'U','D','L','R'}
         """
+        # gets the state of the problem
         state = asp.get_start_state()
+        # from the state gets the locations of the players
         locs = state.player_locs
         board = state.board
+        # gets the player to move information
         ptm = state.ptm
+        # gets the location of the player to move
         loc = locs[ptm]
+        
         possibilities = list(TronProblem.get_safe_actions(board, loc))
         if not possibilities:
             return "U"
