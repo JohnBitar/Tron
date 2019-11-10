@@ -193,6 +193,8 @@ class TronProblem(AdversarialSearchProblem):
         assert self.is_terminal_state(state)
 
         values = [0.0 if pl == None else 1 for pl in state.player_locs]
+        #print("calling evaluate state with values", values)
+        #print("state", state.player_locs)
         return values
 
     ###### STATIC METHODS FOR IMPLEMENTING METHODS ABOVE ######

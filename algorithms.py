@@ -7,8 +7,10 @@ Created on Thu Nov  7 02:30:30 2019
 
 def getalphabetaWithN(asp, state, youPlayer, getMax,alpha, beta, n, funct):
     if asp.is_terminal_state(state):
+        #print("terminal !", asp.evaluate_state(state), state.player_locs, getMax)
         return asp.evaluate_state(state)[youPlayer]
     if n==0:
+        #print("n=0 ", youPlayer, state.ptm, state.player_locs, getMax)
         return funct(state)
 
     returnVal = 0
@@ -17,6 +19,7 @@ def getalphabetaWithN(asp, state, youPlayer, getMax,alpha, beta, n, funct):
     if getMax:
         returnVal = float("-inf")
         for action in asp.get_available_actions(state):
+            #print(action, getMax)
             successor = asp.transition(state, action)
             successorScore = getalphabetaWithN(asp, successor, youPlayer, False, alp, bet, n-1, funct)
             if successorScore > returnVal:
@@ -28,6 +31,7 @@ def getalphabetaWithN(asp, state, youPlayer, getMax,alpha, beta, n, funct):
     else:
         returnVal = float("inf")
         for action in asp.get_available_actions(state):
+            #print(action, getMax)
             successor = asp.transition(state, action)
             successorScore = getalphabetaWithN(asp, successor, youPlayer, True, alp, bet, n-1, funct)
             if successorScore < returnVal:
@@ -82,9 +86,10 @@ def alpha_beta_cutoff(asp, cutoff_ply, eval_func):
     actionToTake = 0
     score = float("-inf")
     for action in asp.get_available_actions(STARTSTATE):
+
         successor = asp.transition(STARTSTATE, action)
         successorScore = getalphabetaWithN(asp, successor, IAMPLAYER, False, alp, bet, cutoff_ply-1, eval_func)
-
+        #print("alphabeta, ", action, " score", successorScore)
         if successorScore > score:
             score = successorScore
             actionToTake= action
