@@ -19,6 +19,7 @@ def run_game(asp, bots, visualizer=None, delay=0.2, max_wait=0.3, colored=True):
     Runs a game and outputs the evaluation of the terminal state.
     """
     state = asp.get_start_state()
+
     if not visualizer == None:
         visualizer(state, colored)
         time.sleep(delay)
@@ -52,7 +53,11 @@ They will go UP this round."""
         if not visualizer == None:
             visualizer(state, colored)
             time.sleep(delay)
-
+        print(state.ptm)
+        try:
+            print("for this state ", bots[1].voronoi(state))
+        except:
+            print("for this state ", bots[0].voronoi(state))
     return asp.evaluate_state(asp.get_start_state())
 
 
