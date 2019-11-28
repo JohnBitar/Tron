@@ -7,6 +7,7 @@ import random, math
 from algorithms import getalphabetaWithN, alpha_beta_cutoff
 from queue import Queue
 from collections import deque
+import time
 # Throughout this file, ASP means adversarial search problem.
 
 
@@ -182,8 +183,13 @@ class StudentBot:
             return 1/2 - self.voronoi(state)/512
         else:
             return 1/2 + self.voronoi(state)/512
-
+    alpha_beta_depth = 6
     movesMade = 0
+    # decides what is the longest it should take per move and shrotest amount of time to take per move
+    high_time = 80
+    low_time = 30
+
+
     def decide(self, asp):
         """
         Input: asp, a TronProblem
@@ -203,26 +209,36 @@ class StudentBot:
         if ptm:
             self.playerNum = ptm
         self.movesMade += 1
-        print(self.movesMade)
+        print("number of moves made", self.movesMade)
         # initialize the depth of alpha beta
 
-        if self.movesMade < 20:
-            alpha_beta_depth = 5
-        elif self.movesMade < 35:
-            alpha_beta_depth = 6
-        elif self.movesMade < 45:
-            alpha_beta_depth = 7
-        elif self.movesMade < 60:
-            alpha_beta_depth = 8
-        elif self.movesMade < 90:
-            alpha_beta_depth = 9
-        elif self.movesMade < 120:
-            alpha_beta_depth = 11
-        else:
-            alpha_beta_depth = 13
+        # if self.movesMade < 20:
+        #     alpha_beta_depth = 5
+        # elif self.movesMade < 35:
+        #     alpha_beta_depth = 6
+        # elif self.movesMade < 45:
+        #     alpha_beta_depth = 7
+        # elif self.movesMade < 60:
+        #     alpha_beta_depth = 8
+        # elif self.movesMade < 90:
+        #     alpha_beta_depth = 9
+        # elif self.movesMade < 120:
+        #     alpha_beta_depth = 11
+        # else:
+        #     alpha_beta_depth = 13
+        # alpha_beta_depth = 13
         #alpha_beta_depth = 7
-        return alpha_beta_cutoff(asp, alpha_beta_depth, self.boardEvaluation)
+        time1 = time.time()
+        move =  alpha_beta_cutoff(asp, self.alpha_beta_depth, self.boardEvaluation)
+        print("in bot, time was ", time.time()-time1, "and depth was ", self.alpha_beta_depth)
+        if (time.time()-time1 < self.low_time):
+            self.alpha_beta_depth += 1
+        elif (time.time() - time1 > self.high_time):
+            self.alpha_beta_depth -= 1
+        #self.alpha_beta_depth = 5
 
+
+        return move
     def cleanup(self):
         """
         Input: None
@@ -235,6 +251,8 @@ class StudentBot:
         turns_elapsed counter to zero). If you don't need it,
         feel free to leave it as "pass"
         """
+        self.alpha_beta_depth = 6
+        self.movesMade = 0
         pass
 
 
@@ -252,6 +270,14 @@ class RandBot:
         ptm = state.ptm
         loc = locs[ptm]
         possibilities = list(TronProblem.get_safe_actions(board, loc))
+        # if you want to play your bot
+        move = input("give me a move")
+        while (not (move in possibilities)) and possibilities:
+            move = input("not a good move \n")
+            if (move == "S"):
+                move = input("be very careful \n")
+                break
+        return move
         if possibilities:
             return random.choice(possibilities)
         return "U"
