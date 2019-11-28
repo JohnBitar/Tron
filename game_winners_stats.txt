@@ -1,0 +1,57 @@
+the result was [0.0, 1] and number of moves made was 40
+bots playing were [<ta_bots.TABot2 object at 0x7f73981bc278>, <bots.StudentBot object at 0x7f73981bc400>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 85! Size of array was 2142, but now is 2184
+
+bots playing were [<ta_bots.TABot2 object at 0x7f73981bc278>, <bots.StudentBot object at 0x7f73981bc400>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 139! Size of array was 2184, but now is 2255
+
+bots playing were [<ta_bots.TABot2 object at 0x7f73981bc278>, <bots.StudentBot object at 0x7f73981bc400>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 48! Size of array was 2255, but now is 2280
+
+bots playing were [<ta_bots.TABot2 object at 0x7f73981bc278>, <bots.StudentBot object at 0x7f73981bc400>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 193! Size of array was 2280, but now is 2376
+
+bots playing were [<ta_bots.TABot2 object at 0x7f68403eb470>, <bots.StudentBot object at 0x7f68403eb5c0>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 71! Size of array was 2376, but now is 2411
+
+bots playing were [<ta_bots.TABot2 object at 0x7f68403eb470>, <bots.StudentBot object at 0x7f68403eb5c0>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 99! Size of array was 2411, but now is 2462
+
+bots playing were [<ta_bots.TABot2 object at 0x7f68403eb470>, <bots.StudentBot object at 0x7f68403eb5c0>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [1, 0.0]! The number of moves made was 136! Size of array was 2462, but now is 2528
+
+bots playing were [<ta_bots.TABot2 object at 0x7f68403eb470>, <bots.StudentBot object at 0x7f68403eb5c0>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 175! Size of array was 2528, but now is 2617
+
+bots playing were [<ta_bots.TABot2 object at 0x7f68403eb470>, <bots.StudentBot object at 0x7f68403eb5c0>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 115! Size of array was 2617, but now is 2674
+
+bots playing were [<ta_bots.TABot2 object at 0x7f68403eb470>, <bots.StudentBot object at 0x7f68403eb5c0>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 231! Size of array was 2674, but now is 2791
+
+bots playing were [<ta_bots.TABot2 object at 0x7f68403eb470>, <bots.StudentBot object at 0x7f68403eb5c0>] playing on mapmaps/hunger_games.txt! High time was 10 and low time was 2! the result was [0.0, 1]! The number of moves made was 133! Size of array was 2791, but now is 2861
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 177! Size of array was 2861, but now is 2951
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [1, 0.0]! The number of moves made was 168! Size of array was 2951, but now is 3035
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 119! Size of array was 3035, but now is 3096
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [1, 0.0]! The number of moves made was 74! Size of array was 3096, but now is 3133
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 61! Size of array was 3133, but now is 3163
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 115! Size of array was 3163, but now is 3220
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 125! Size of array was 3220, but now is 3282
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 12! Size of array was 3282, but now is 3288
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 177! Size of array was 3288, but now is 3376
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 207! Size of array was 3376, but now is 3481
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [1, 0.0]! The number of moves made was 110! Size of array was 3481, but now is 3532
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 53! Size of array was 3532, but now is 3560
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 77! Size of array was 3560, but now is 3600
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [1, 0.0]! The number of moves made was 58! Size of array was 3600, but now is 3629
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [1, 0.0]! The number of moves made was 164! Size of array was 3629, but now is 3705
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 175! Size of array was 3705, but now is 3794
+
+bots playing were [<ta_bots.TABot2 object at 0x7f892d3e8400>, <bots.StudentBot object at 0x7f892d3e8550>] playing on mapmaps/joust.txt! High time was 50 and low time was 20! the result was [0.0, 1]! The number of moves made was 69! Size of array was 3794, but now is 3828
+
