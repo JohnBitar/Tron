@@ -104,6 +104,10 @@ class StudentBot:
                             frontier_looked_at.append(((r1, c1), curDepth+2))
                             # increment the number of nodes P1 dominates
                             currentDominatorCount += 1
+                            # if board[r1][c1] == CellType.ARMOR:
+                            #     currentDominatorCount += 9
+                            # elif board[r1][c1] == CellType.TRAP:
+                            #     currentDominatorCount += 4
                             # say that it is dominated with depth curDepth+1
                             visitedOrDominated[(r1, c1)] = curDepth+2
                     # we check if the next node has the depth we're looking for
@@ -161,6 +165,11 @@ class StudentBot:
                     frontier_looked_at.append(((r1, c1), curDepth+2))
                     # increment the number of nodes P1 dominates
                     currentDominatorCount += 1
+
+                    if board[r1][c1] == CellType.TRAP:
+                        currentDominatorCount += 4
+                    elif board[r1][c1] == CellType.ARMOR:
+                        currentDominatorCount += 9
                     # say that it is dominated with depth curDepth+1
                     visitedOrDominated[(r1, c1)] = depth
         #print(curNode, " | ", currentDominatorCount)
@@ -179,15 +188,19 @@ class StudentBot:
     playerNum = 0
     def boardEvaluation(self, state):
         #print("evaluate", self.playerNum)
+        p1ArmorScore = 1 if state.player_has_armor(0) else 0
+
+        p2ArmorScore = 1 if state.player_has_armor(1) else 0
+
         if self.playerNum:
-            return 1/2 - self.voronoi(state)/512
+            return 1/2 - self.voronoi(state)/512 - (p1ArmorScore-p2ArmorScore)/16
         else:
-            return 1/2 + self.voronoi(state)/512
+            return 1/2 + self.voronoi(state)/512 + (p1ArmorScore-p2ArmorScore)/16
     alpha_beta_depth = 6
     movesMade = 0
     # decides what is the longest it should take per move and shrotest amount of time to take per move
-    high_time = 80
-    low_time = 30
+    high_time = 0.3
+    low_time = 0.08
 
 
     def decide(self, asp):
