@@ -5,9 +5,30 @@ from collections import defaultdict
 import support
 import random
 import numpy as np
+from tron_gym import transform_board
 
 
-def run_game(asp, bots, visualizer=None, delay=0.2, max_wait=0.3, colored=True):
+# prints the boards and moves in the numpy aray of state-action pairs
+def print_game_played(np_array_of_state_action_pairs, visualizer):
+    print("printing ")
+    numberOfPrints = 0
+    print(len(np_array_of_state_action_pairs))
+    for state_action_pair in np_array_of_state_action_pairs:
+        print("\n")
+        print("state was")
+        visualizer(state_action_pair[0], True)
+        #time.sleep(0.2)
+        print("player to move was ", state_action_pair[0].ptm)
+        print("decision was")
+        print(state_action_pair[1])
+        numberOfPrints += 1
+        print("number of prints ", numberOfPrints)
+        print("\n \n \n ")
+        if (numberOfPrints == 100):
+            break
+    print("numeber of state action pairs saved", len(np_array_of_state_action_pairs))
+
+def run_game(asp, bots, visualizer=None, delay=0.2, max_wait=0.3, colored=True, map = None):
     """
     Inputs:
         - asp: an adversarial search problem
@@ -19,18 +40,34 @@ def run_game(asp, bots, visualizer=None, delay=0.2, max_wait=0.3, colored=True):
     Runs a game and outputs the evaluation of the terminal state.
     """
     state = asp.get_start_state()
-
+    transform_board(state)
+    # saving_object = np.load("tito.npy")
+    # print("the state is", saving_object)
+    winning_games = np.load("winning_games.npy")
+    print("the winning games are " ,winning_games)
+    #print_game_played(winning_games, visualizer)
+    #new_object = [[state, "D"]]
+    # #print_game_played(saving_object, visualizer)
+    # new_object = np.append(saving_object, [[state, "R"]], axis=0)
+    #saving_object = [state, "U"]
+    # print("the state is", new_object)
+    player1Decisions = []
+    player2Decisions = []
+    currentDecision = player1Decisions
+    #np.save("tito", new_object)
     if not visualizer == None:
         visualizer(state, colored)
         time.sleep(delay)
-
+    movesMade = 0
     while not (asp.is_terminal_state(state)):
         exposed = copy.deepcopy(asp)
         signal.signal(signal.SIGALRM, support.timeout_handler)
         signal.setitimer(signal.ITIMER_REAL, max_wait)
         try:
             # run AI
+            time1 = time.time()
             decision = bots[state.ptm].decide(exposed)
+            print("it took ", time.time() - time1)
             signal.setitimer(signal.ITIMER_REAL, 0)
         except support.TimeoutException as msg:
             if visualizer:
@@ -41,6 +78,18 @@ They will go UP this round."""
                 )
             decision = "U"
         signal.setitimer(signal.ITIMER_REAL, 0)
+
+        # for game saving purposes
+        currentDecision.append([state, decision])
+        #print("the state player to move is ", state.ptm)
+        if state.ptm:
+            currentDecision = player1Decisions
+        else:
+            currentDecision = player2Decisions
+        movesMade += 1
+
+
+
 
         available_actions = asp.get_available_actions(state)
         if not decision in available_actions:
@@ -53,11 +102,35 @@ They will go UP this round."""
         if not visualizer == None:
             visualizer(state, colored)
             time.sleep(delay)
-        print(state.ptm)
-        try:
-            print("for this state ", bots[1].voronoi(state))
-        except:
-            print("for this state ", bots[0].voronoi(state))
+        print("player to move", state.ptm)
+        # try:
+        #     print("for this state ", bots[1].voronoi(state))
+        # except:
+        #     print("for this state ", bots[0].voronoi(state))
+    # calculates how big is our winning_games before and after we dad the new state-action pairs
+    previousSize = len(winning_games)
+    winning_games = np.append(winning_games, currentDecision, axis=0)
+
+    newSize = len(winning_games)
+
+    # this works only if one of the bots is our bot
+    try:
+        highTime = bots[1].high_time
+        lowTime = bots[1].low_time
+    except:
+        highTime = bots[0].high_time
+        lowTime = bots[0].low_time
+    # save the winning_games
+    np.save("winning_games", winning_games)
+
+    # write down the data of this game
+    f = open("game_winners_stats.txt", "a+")
+    string_to_write = ("bots playing were " + str(bots)+ " playing on map"+ str(map)+"! High time was " + str(highTime) +" and low time was " + str(lowTime)+"! the result was " +str(asp.evaluate_state(asp.get_start_state())) + "! The number of moves made was " + str(movesMade)+ "! Size of array was "+ str(previousSize) + ", but now is "+str(newSize) +"\n\n")
+    # give it time after sleeping and closing to fix a bug where it deletes the contents of mgame_winners_stats
+    f.write(string_to_write)
+    time.sleep(1)
+    f.close()
+    time.sleep(2)
     return asp.evaluate_state(asp.get_start_state())
 
 
@@ -102,6 +175,8 @@ def main():
     parser.set_defaults(colored=True)
 
     args = parser.parse_args()
+
+    print("arguments are ", args)
     wait = args.max_wait
     bots = support.determine_bot_functions(args.bots)
     delay = args.image_delay
@@ -117,8 +192,10 @@ def main():
         winners = defaultdict(int)
         bots = support.determine_bot_functions(args.bots)
         for i in range(multi):
+            print("running this time ", i)
             game = TronProblem(args.map, 0)
-            outcome = run_game(game, bots, visualizer, delay, wait, colored)
+            # passing in the map for stas purposes
+            outcome = run_game(game, bots, visualizer, delay, wait, colored, args.map)
             winner = outcome.index(1)
             winners[winner] += 1
             for bot in bots:
@@ -128,7 +205,8 @@ def main():
 
     else:
         game = TronProblem(args.map, 0)
-        outcome = run_game(game, bots, visualizer, delay, wait, colored)
+        # changed to pass in the map as well for stats purposes
+        outcome = run_game(game, bots, visualizer, delay, wait, colored, args.map)
         winner = outcome.index(1) + 1
         print("Player %s won!" % winner)
 
