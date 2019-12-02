@@ -102,7 +102,6 @@ def main():
     parser.set_defaults(colored=True)
 
     args = parser.parse_args()
-
     wait = args.max_wait
     bots = support.determine_bot_functions(args.bots)
     delay = args.image_delay
