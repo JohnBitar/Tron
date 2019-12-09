@@ -1,0 +1,251 @@
+tate was
+Player 1: ...
+Player 2: ...
+#################
+#@      *      @#
+#               #
+#               #
+#              2#
+#       x      x#
+#       xx     x#
+#*     xxx     x#
+###x###xxx### ###
+#!     xxx     @#
+#  xx  xxx      #
+#  xxx xxx      #
+# xxxx xxx    x #
+# x xx xxxxxxxx #
+# xxxx xxx      #
+#^1xxxxx!      !#
+#################
+
+player to move was  0
+decision was
+L
+number of prints  35
+
+
+
+
+
+
+state was
+Player 1: ...
+Player 2: ...
+#################
+#@      *      @#
+#               #
+#              2#
+#              x#
+#       x      x#
+#       xx     x#
+#*     xxx     x#
+###x###xxx### ###
+#!     xxx     @#
+#  xx  xxx      #
+#  xxx xxx      #
+# xxxx xxx    x #
+# x xx xxxxxxxx #
+# xxxx xxx      #
+#1xxxxxx!      !#
+#################
+
+player to move was  0
+decision was
+U
+number of prints  36
+
+
+
+
+
+
+state was
+Player 1: ...
+Player 2: ...
+#################
+#@      *      @#
+#              2#
+#              x#
+#              x#
+#       x      x#
+#       xx     x#
+#*     xxx     x#
+###x###xxx### ###
+#!     xxx     @#
+#1 xx  xxx      #
+#x xxx xxx      #
+#xxxxx xxx    x #
+#xx xx xxxxxxxx #
+#xxxxx xxx      #
+#xxxxxxx!      !#
+#################
+
+player to move was  0
+decision was
+U
+number of prints  37
+
+
+
+
+
+
+state was
+Player 1: ...
+Player 2: Armor
+#################
+#@      *      2#
+#              x#
+#              x#
+#              x#
+#       x      x#
+#       xx     x#
+#*     xxx     x#
+### ###xxx### ###
+#1     xxx     @#
+#      xxx      #
+#      xxx      #
+#      xxx    x #
+#      xxxxxxxx #
+#xxxxx xxx      #
+#xxxxxxx!      !#
+#################
+
+player to move was  0
+decision was
+R
+number of prints  38
+
+
+
+
+
+
+state was
+Player 1: ...
+Player 2: Armor
+#################
+#@      *     2x#
+#              x#
+#              x#
+#              x#
+#       x      x#
+#       xx     x#
+#*     xxx     x#
+### ###xxx### ###
+#x1    xxx     @#
+#      xxx      #
+#      xxx      #
+#      xxx    x #
+#      xxxxxxxx #
+#xxxxx xxx      #
+#xxxxxxx!      !#
+#################
+
+player to move was  0
+decision was
+D
+number of prints  39
+
+
+
+
+
+
+
+
+
+
+in bot, time was  0.008315801620483398 and depth was  7
+it took  0.00833439826965332
+player to move 0
+it took  0.002074718475341797
+player to move 0
+it took  0.003914833068847656
+player to move 0
+it took  0.0057201385498046875
+player to move 0
+it took  0.011224746704101562
+player to move 0
+it took  0.013921737670898438
+player to move 1
+number of moves made 16
+in bot, time was  0.33503079414367676 and depth was  8
+it took  0.33507633209228516
+34935  and moves made 35
+error in state <tronproblem.TronState object at 0x7fb1c7b0a630>
+Player 1: ...
+Player 2: ...
+#################
+#^      *      @#
+#               #
+#             1 #
+#             xx#
+#            xxx#
+#       xxxxxxxx#
+#@      x     xx#
+###x### x ###x###
+#!     xx      @#
+#      xxxxxx   #
+#       xxxxx   #
+#           2   #
+#               #
+#               #
+#@      ^      !#
+#################
+
+
+
+
+
+
+
+
+
+
+
+
+in bot, time was  1.1254723072052002 and depth was  13
+it took  1.1255261898040771
+37560  and moves made 119
+error in state <tronproblem.TronState object at 0x7fba00a43550>
+Player 1: ...
+Player 2: ...
+#################
+#xxxxxxxxxxxxx @#
+#xxxxxx xxxx xx #
+#xxxx xxx  xxxx #
+#xxxxxxx  xx xx #
+#xx  xxx xxx    #
+#1xxxxxxxxxxx   #
+#!      xxx xx *#
+###x### xx###x###
+#^      xxxxxx x#
+#       xxxx xxx#
+#       xxxx x  #
+#      xxxxxx   #
+#      xxx xx   #
+#         xxx   #
+#^      !2xxx  !#
+#################
+
+Player 1: ...
+Player 2: ...
+#################
+#xxxxxxxxxxxxx @#
+#xxxxxx xxxx xx #
+#xxxx xxx  xxxx #
+#xxxxxxx  xx xx #
+#xx  xxx xxx    #
+#1xxxxxxxxxxx   #
+#!      xxx xx *#
+###x### xx###x###
+#^      xxxxxx x#
+#       xxxx xxx#
+#            x  #
+#               #
+#               #
+#               #
+#^      2      !#
+#################

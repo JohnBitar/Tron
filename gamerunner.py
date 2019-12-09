@@ -6,27 +6,36 @@ import support
 import random
 import numpy as np
 from tron_gym import transform_board
+# from neural_net import train_with_RL
 
 
+onlyPrint = False
 # prints the boards and moves in the numpy aray of state-action pairs
-def print_game_played(np_array_of_state_action_pairs, visualizer):
+def print_game_played(np_array_of_state_action_pairs, visualizer, number_to_begin, number_to_print):
     print("printing ")
     numberOfPrints = 0
     print(len(np_array_of_state_action_pairs))
-    for state_action_pair in np_array_of_state_action_pairs:
+    for state_action_pair_number in range(number_to_begin, 100000):
         print("\n")
         print("state was")
-        visualizer(state_action_pair[0], True)
+        visualizer(np_array_of_state_action_pairs[state_action_pair_number][0], True)
         #time.sleep(0.2)
-        print("player to move was ", state_action_pair[0].ptm)
+        print("player to move was ", np_array_of_state_action_pairs[state_action_pair_number][0].ptm)
         print("decision was")
-        print(state_action_pair[1])
+        print(np_array_of_state_action_pairs[state_action_pair_number][1])
         numberOfPrints += 1
         print("number of prints ", numberOfPrints)
         print("\n \n \n ")
-        if (numberOfPrints == 100):
+        if (numberOfPrints == number_to_print):
             break
     print("numeber of state action pairs saved", len(np_array_of_state_action_pairs))
+
+
+topTimes = []
+
+
+
+
 
 def run_game(asp, bots, visualizer=None, delay=0.2, max_wait=0.3, colored=True, map = None):
     """
@@ -41,24 +50,25 @@ def run_game(asp, bots, visualizer=None, delay=0.2, max_wait=0.3, colored=True, 
     """
     state = asp.get_start_state()
     transform_board(state)
-    # saving_object = np.load("tito.npy")
-    # print("the state is", saving_object)
+
     winning_games = np.load("winning_games.npy")
-    print("the winning games are " ,winning_games)
-    #print_game_played(winning_games, visualizer)
-    #new_object = [[state, "D"]]
-    # #print_game_played(saving_object, visualizer)
-    # new_object = np.append(saving_object, [[state, "R"]], axis=0)
-    #saving_object = [state, "U"]
-    # print("the state is", new_object)
+    print("the winning games are length" , len(winning_games))
+    global onlyPrint
+    if onlyPrint:
+        print_game_played(winning_games, visualizer, 48600, 120)
+        return 0
+
+
+
     player1Decisions = []
     player2Decisions = []
     currentDecision = player1Decisions
-    #np.save("tito", new_object)
     if not visualizer == None:
         visualizer(state, colored)
         time.sleep(delay)
     movesMade = 0
+    topTime = 0
+    averageTime = 0
     while not (asp.is_terminal_state(state)):
         exposed = copy.deepcopy(asp)
         signal.signal(signal.SIGALRM, support.timeout_handler)
@@ -67,7 +77,23 @@ def run_game(asp, bots, visualizer=None, delay=0.2, max_wait=0.3, colored=True, 
             # run AI
             time1 = time.time()
             decision = bots[state.ptm].decide(exposed)
-            print("it took ", time.time() - time1)
+            totalTimeTook = time.time() - time1
+            print("it took ", totalTimeTook)
+            if topTime < totalTimeTook:
+                topTime = totalTimeTook
+            averageTime  += totalTimeTook
+
+            if (totalTimeTook) > max_wait:
+                print(len(winning_games), " and moves made", movesMade)
+                print("error in state", state)
+                try:
+                    visualizer = TronProblem.visualize_state
+                except:
+                    visualizer = None
+                if not visualizer == None:
+                    visualizer(state, colored)
+                    time.sleep(delay)
+
             signal.setitimer(signal.ITIMER_REAL, 0)
         except support.TimeoutException as msg:
             if visualizer:
@@ -76,6 +102,7 @@ def run_game(asp, bots, visualizer=None, delay=0.2, max_wait=0.3, colored=True, 
 They will go UP this round."""
                     % (state.ptm + 1)
                 )
+                print(time.time()-time1)
             decision = "U"
         signal.setitimer(signal.ITIMER_REAL, 0)
 
@@ -103,16 +130,16 @@ They will go UP this round."""
             visualizer(state, colored)
             time.sleep(delay)
         print("player to move", state.ptm)
-        # try:
-        #     print("for this state ", bots[1].voronoi(state))
-        # except:
-        #     print("for this state ", bots[0].voronoi(state))
+
+
     # calculates how big is our winning_games before and after we dad the new state-action pairs
     previousSize = len(winning_games)
     winning_games = np.append(winning_games, currentDecision, axis=0)
 
     newSize = len(winning_games)
-
+    averageTime /= movesMade
+    global topTimes
+    topTimes.append((averageTime, topTime))
     # this works only if one of the bots is our bot
     try:
         highTime = bots[1].high_time
@@ -138,6 +165,10 @@ They will go UP this round."""
 
 
 def main():
+
+    # decisde whether or not to train it with RL
+    train_it_with_RL = False
+
     random.seed(1)
     np.random.seed(1)
 
@@ -174,6 +205,7 @@ def main():
     )
     parser.set_defaults(colored=True)
 
+
     args = parser.parse_args()
 
     print("arguments are ", args)
@@ -187,6 +219,8 @@ def main():
     visualizer = None
     if verbose:
         visualizer = TronProblem.visualize_state
+
+
 
     if multi is not None:
         winners = defaultdict(int)
@@ -202,11 +236,24 @@ def main():
                 bot.cleanup()
         for winner, wins in list(winners.items()):
             print("Player %s won %d out of %d times" % (winner + 1, wins, multi))
+        global topTimes
+        totalMax = 0
+        maxAvg = 0
+        for pair in topTimes:
+            print("times were ", pair[0], " and ", pair[1])
+            if totalMax < pair[1]:
+                totalMax = pair[1]
+            if maxAvg < pair[0]:
+                maxAvg = pair[0]
+        print("max was ", totalMax, maxAvg)
 
     else:
         game = TronProblem(args.map, 0)
         # changed to pass in the map as well for stats purposes
         outcome = run_game(game, bots, visualizer, delay, wait, colored, args.map)
+        global onlyPrint
+        if onlyPrint:
+            return 0
         winner = outcome.index(1) + 1
         print("Player %s won!" % winner)
 

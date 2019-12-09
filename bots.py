@@ -68,29 +68,27 @@ class StudentBot:
             frontier_looked_at = p2Frontier
             currentDominatorCount = numberP2Dominates
 
-        #print("start of something new")
+
         curDepth = 0
         curNode = 0
         while (p1Frontier or p2Frontier):
-            #print("in whil")
+
             try:
                 # what to do when one player stops having things in its frontier
                 # pop the current Node and its Depth
-                #print("try")
-                #print("lala ", frontier_looked_at[0])
+
 
                 curNode, curDepth = frontier_looked_at.popleft()
-                #print("heer")
+
                 # as long as the current depth is the one we're interested in
                 while curDepth == depth:
                     r0, c0 = curNode
                     # for each of the node's neighbors
-                    #print(r0, c0, "| Depth", curDepth)
+
                     for action in {U, D, L, R}:
 
                         r1, c1 = TronProblem.move(curNode, action)
-                        #
-                        #print("child", r1, c1)
+
                         # which don't have barriers, walls, or other players
                         # and are not visitedOrDominated
                         if not (
@@ -99,28 +97,28 @@ class StudentBot:
                             or TronProblem.is_cell_player(board, (r1, c1))
                         ) and not (r1, c1) in visitedOrDominated:
 
-                            #print("this one is getting it", currentDominatorCount)
+
                             # make sure to visit that node in the future
                             frontier_looked_at.append(((r1, c1), curDepth+2))
                             # increment the number of nodes P1 dominates
                             currentDominatorCount += 1
-                            # if board[r1][c1] == CellType.ARMOR:
-                            #     currentDominatorCount += 9
-                            # elif board[r1][c1] == CellType.TRAP:
-                            #     currentDominatorCount += 4
+                            if board[r1][c1] == CellType.ARMOR:
+                                currentDominatorCount += 9
+                            elif board[r1][c1] == CellType.TRAP:
+                                currentDominatorCount += 4
+                            # elif board[r1][c1] == CellType.BOMB:
+                            #     currentDominatorCount += 16
                             # say that it is dominated with depth curDepth+1
                             visitedOrDominated[(r1, c1)] = curDepth+2
                     # we check if the next node has the depth we're looking for
-                    #potential error
-                    #print("here")
+
                     if not (frontier_looked_at and frontier_looked_at[0][1] == depth):
-                        #print("now ")
+
                         if (frontier_looked_at is p1Frontier):
                             frontier_looked_at = p2Frontier
                             numberP1Dominates = currentDominatorCount
                             currentDominatorCount = numberP2Dominates
                         else:
-                            #print("lala ")
                             frontier_looked_at = p1Frontier
                             numberP2Dominates = currentDominatorCount
                             currentDominatorCount = numberP1Dominates
@@ -142,12 +140,12 @@ class StudentBot:
                     frontier_looked_at = p1Frontier
                     numberP2Dominates = currentDominatorCount
                     currentDominatorCount = numberP1Dominates
-                #print("we're here")
+
                 break
-        #print("out")
+
         while frontier_looked_at:
 
-             #print("curDept", curDepth, curNode)
+
              curNode, curDepth = frontier_looked_at.popleft()
              r0, c0 = curNode
              # for each of the node's neighbors
@@ -170,18 +168,19 @@ class StudentBot:
                         currentDominatorCount += 4
                     elif board[r1][c1] == CellType.ARMOR:
                         currentDominatorCount += 9
+                    # elif board[r1][c1] == CellType.BOMB:
+                    #     currentDominatorCount += 16
+
                     # say that it is dominated with depth curDepth+1
                     visitedOrDominated[(r1, c1)] = depth
-        #print(curNode, " | ", currentDominatorCount)
-        #print(numberP1Dominates, "voronoia before ", numberP2Dominates)
+
         if frontier_looked_at is p1Frontier:
             numberP1Dominates = currentDominatorCount
         else:
             numberP2Dominates = currentDominatorCount
-        #print("numberP1Dominates", numberP1Dominates, "|", numberP2Dominates)
-        #print(numberP1Dominates, "voronoia ", numberP2Dominates)
+
         score = (numberP1Dominates - numberP2Dominates)
-        #print(numberP1Dominates ,"|", numberP2Dominates)
+
         return score
 
         # Start with the loop with player_to_play's position
@@ -193,14 +192,39 @@ class StudentBot:
         p2ArmorScore = 1 if state.player_has_armor(1) else 0
 
         if self.playerNum:
-            return 1/2 - self.voronoi(state)/512 - (p1ArmorScore-p2ArmorScore)/16
+            return 1/2 - self.voronoi(state)/1024 - (p1ArmorScore-p2ArmorScore)/64
         else:
-            return 1/2 + self.voronoi(state)/512 + (p1ArmorScore-p2ArmorScore)/16
-    alpha_beta_depth = 6
+            return 1/2 + self.voronoi(state)/1024 + (p1ArmorScore-p2ArmorScore)/64
+    alpha_beta_depth = 5
     movesMade = 0
     # decides what is the longest it should take per move and shrotest amount of time to take per move
-    high_time = 0.3
-    low_time = 0.08
+    high_time = 0.08
+    low_time = 0.02
+
+
+
+
+    def powerups_next_to_me_or_other(self, asp):
+        state = asp.get_start_state()
+        needToDownGrade = 0
+        board = state.board
+        # gets the locations of the players
+        locs = state.player_locs
+        barriers = 0
+        for curNode in locs:
+            for action in {U, D, L, R}:
+
+                r1, c1 = TronProblem.move(curNode, action)
+                if board[r1][c1] == CellType.SPEED:
+                    needToDownGrade +=1
+                elif board[r1][c1] == CellType.BOMB:
+                    needToDownGrade +=1
+                elif (board[r1][c1] == CellType.BARRIER
+                    or board[r1][c1] == CellType.WALL):
+                    barriers += 1
+        return barriers, needToDownGrade
+
+
 
 
     def decide(self, asp):
@@ -222,32 +246,34 @@ class StudentBot:
         if ptm:
             self.playerNum = ptm
         self.movesMade += 1
-        print("number of moves made", self.movesMade)
+
+
+        #print("number of moves made", self.movesMade)
         # initialize the depth of alpha beta
 
-        # if self.movesMade < 20:
-        #     alpha_beta_depth = 5
-        # elif self.movesMade < 35:
-        #     alpha_beta_depth = 6
-        # elif self.movesMade < 45:
-        #     alpha_beta_depth = 7
-        # elif self.movesMade < 60:
-        #     alpha_beta_depth = 8
-        # elif self.movesMade < 90:
-        #     alpha_beta_depth = 9
-        # elif self.movesMade < 120:
-        #     alpha_beta_depth = 11
-        # else:
-        #     alpha_beta_depth = 13
-        # alpha_beta_depth = 13
-        #alpha_beta_depth = 7
+
+
         time1 = time.time()
         move =  alpha_beta_cutoff(asp, self.alpha_beta_depth, self.boardEvaluation)
-        print("in bot, time was ", time.time()-time1, "and depth was ", self.alpha_beta_depth)
-        if (time.time()-time1 < self.low_time):
+        totalTime = time.time()-time1
+        print("in bot, time was ", totalTime, "and depth was ", self.alpha_beta_depth)
+        if (totalTime < self.low_time):
             self.alpha_beta_depth += 1
-        elif (time.time() - time1 > self.high_time):
+        elif (totalTime > self.high_time):
             self.alpha_beta_depth -= 1
+
+
+        safe_moves = list(TronProblem.get_safe_actions(board, loc))
+        if safe_moves and (not move in safe_moves) and (not state.player_has_armor(ptm)):
+            print("didn't want to do a safe move ")
+            move = safe_moves[0]
+        # elif (totalTime > self.low_time):
+        #     barriers, needToDownGrade = self.powerups_next_to_me_or_other(asp)
+        #     if barriers > 4:
+        #         self.alpha_beta_depth -= 1
+        #     if needToDownGrade > 0:
+        #         self.alpha_beta_depth -= 1
+
         #self.alpha_beta_depth = 5
 
 

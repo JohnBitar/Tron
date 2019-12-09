@@ -67,6 +67,7 @@ def transform_board(state):
     # though we'd also need to add whether or not the two players have armors or not if this were to be a useful representation
 
     #print(return_vector)
+
     return return_vector
 
 
